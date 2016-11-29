@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Announcers;
 using FluentMigrator.Runner.Initialization;
@@ -53,6 +54,7 @@ namespace FluentMigrator.Console
         public string WorkingDirectory;
         public bool TransactionPerSession;
         public string ProviderSwitches;
+        public bool LogFile;
 
         public RunnerContext RunnerContext { get; private set;}
 
@@ -187,6 +189,12 @@ namespace FluentMigrator.Console
                                             "transaction-per-session|tps",
                                             "Overrides the transaction behavior of migrations, so that all migrations to be executed will run in one transaction.",
                                             v => { TransactionPerSession = true; }
+                                            },
+                                        {
+                                            "logfile|log|lf",
+                                            "Output all console messages to a file. Default is false. Log file is located in same directory as EXE with the naming convention of MMDDYYYY_Migrate.log."
+                                            ,
+                                            v => { LogFile = true; }
                                             }
                                     };
 
@@ -200,6 +208,8 @@ namespace FluentMigrator.Console
                     consoleAnnouncer.Say("Try 'migrate --help' for more information.");
                     return;
                 }
+
+                consoleAnnouncer.LogFile = LogFile;
 
                 if (string.IsNullOrEmpty(Task))
                     Task = "migrate";

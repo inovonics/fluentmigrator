@@ -17,15 +17,34 @@
 #endregion
 
 using System;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace FluentMigrator.Console
 {
     class Program
     {
+        [DllImport("Kernel32.dll")]
+        private static extern IntPtr GetConsoleWindow();
+
+        [DllImport("User32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int cmdShow);
+
         static void Main(string[] args)
         {
             try
             {
+                if (args.Contains("--silent") || args.Contains("/silent"))
+                {
+                    //Hide the console window
+                    IntPtr hWnd = GetConsoleWindow();
+                    if (hWnd != IntPtr.Zero)
+                    {
+                        //SW_SHOW = 5, SW_HIDE = 0
+                        ShowWindow(hWnd, 0);
+                    }
+                }
+
                 new MigratorConsole(args);
             }
             catch (ArgumentException ex)

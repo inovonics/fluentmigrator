@@ -22,6 +22,7 @@ namespace FluentMigrator.Runner.Announcers
 {
     public abstract class Announcer : IAnnouncer
     {
+        public virtual bool LogFile { get; set; }
         public virtual bool ShowSql { get; set; }
         public virtual bool ShowElapsedTime { get; set; }
 

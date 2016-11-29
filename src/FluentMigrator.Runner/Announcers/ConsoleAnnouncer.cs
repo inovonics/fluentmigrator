@@ -17,11 +17,14 @@
 #endregion
 
 using System;
+using System.IO;
 
 namespace FluentMigrator.Runner.Announcers
 {
     public class ConsoleAnnouncer : Announcer
     {
+        private readonly string _filePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\";
+
         public void Header()
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -46,6 +49,7 @@ namespace FluentMigrator.Runner.Announcers
             Console.ForegroundColor = ConsoleColor.Green;
             HorizontalRule();
             base.Heading(message);
+            WriteLogFile(message);
             HorizontalRule();
             Console.ResetColor();
         }
@@ -54,6 +58,7 @@ namespace FluentMigrator.Runner.Announcers
         {
             Console.ForegroundColor = ConsoleColor.White;
             base.Say(string.Format("[+] {0}", message));
+            WriteLogFile(message);
             Console.ResetColor();
         }
 
@@ -61,6 +66,7 @@ namespace FluentMigrator.Runner.Announcers
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             base.Say(string.Format("[+] {0}", message));
+            WriteLogFile(message);
             Console.ResetColor();
         }
 
@@ -74,6 +80,7 @@ namespace FluentMigrator.Runner.Announcers
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Error.WriteLine(string.Format("!!! {0}", message));
+            WriteLogFile(message);
             Console.ResetColor();
         }
 
@@ -85,6 +92,28 @@ namespace FluentMigrator.Runner.Announcers
         public override void Write(string message, bool escaped)
         {
             Console.Out.WriteLine(message);
+            WriteLogFile(message);
+        }
+
+        private void WriteLogFile(string message)
+        {
+            string fileName = string.Empty;
+
+            try
+            {
+                if (LogFile)
+                {
+                    fileName = _filePath + DateTime.Now.ToString("MMddyyyy") + "_Migrate.log";
+
+                    StreamWriter writer = new StreamWriter(fileName, true);
+                    writer.WriteLine(message);
+                    writer.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine("Unable to write message: {0} to logfile: {1} due to error: {2}", message, fileName, ex.Message);
+            }
         }
     }
 }
