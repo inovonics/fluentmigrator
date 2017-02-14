@@ -34,7 +34,7 @@ namespace FluentMigrator.Console
         {
             try
             {
-                if (args.Contains("--silent") || args.Contains("/silent"))
+                if (args.Contains("--silent"))
                 {
                     //Hide the console window
                     IntPtr hWnd = GetConsoleWindow();

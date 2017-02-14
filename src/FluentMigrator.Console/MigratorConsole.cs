@@ -195,6 +195,12 @@ namespace FluentMigrator.Console
                                             "Output all console messages to a file. Default is false. Log file is located in same directory as EXE with the naming convention of MMDDYYYY_Migrate.log."
                                             ,
                                             v => { LogFile = true; }
+                                            },
+                                        {
+                                            "silent",
+                                            "Executes specified argument tasks without the console window being displayed."
+                                            ,
+                                            v => { }
                                             }
                                     };
 
@@ -218,6 +224,7 @@ namespace FluentMigrator.Console
                     string.IsNullOrEmpty(TargetAssembly))
                 {
                     DisplayHelp(optionSet);
+                    System.Console.Read();
                     Environment.ExitCode = 1;
                     return;
                 }
@@ -251,8 +258,12 @@ namespace FluentMigrator.Console
         {
             consoleAnnouncer.Write("Usage:");
             consoleAnnouncer.Write("  migrate [OPTIONS]");
+            consoleAnnouncer.Write(string.Empty);
             consoleAnnouncer.Write("Example:");
             consoleAnnouncer.Write("  migrate -a bin\\debug\\MyMigrations.dll -db SqlServer2008 -conn \"SEE_BELOW\" -profile \"Debug\"");
+            consoleAnnouncer.Write(string.Empty);
+            consoleAnnouncer.Write("TapWatch Example:");
+            consoleAnnouncer.Write("  /assembly <InstallPath>TapWatchDatabase.dll /provider MySQL /connectionString \"Database=<TAPWATCHDB_NAME>; Data Source=<TAPWATCHDB_HOST>; Port=<MARIADB_PORT>; User Id=<TAPWATCHDB_USERNAME>; Password=<TAPWATCHDB_PASSWORD>;\" /verbose foo /logfile /version 1 /silent");
             consoleAnnouncer.HorizontalRule();
             consoleAnnouncer.Write("Example Connection Strings:");
             consoleAnnouncer.Write("  MySql: Data Source=172.0.0.1;Database=Foo;User Id=USERNAME;Password=BLAH");
